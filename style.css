@@ -1,0 +1,34 @@
+body {
+    background-color: #f4f6f9;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: #243b55;
+}
+
+.assignment-section {
+    background-color: white;
+    padding: 25px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+}
+
+.assignment-section h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #243b55;
+}
+
+form {
+    max-width: 100%;
+}
+
+textarea {
+    resize: vertical;
+}
+
+#genderFeedback {
+    display: block;
+}
