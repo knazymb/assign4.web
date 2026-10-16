@@ -3,32 +3,48 @@ body {
     font-family: Arial, sans-serif;
 }
 
-h1 {
+.navbar-brand {
+    font-weight: bold;
+}
+
+.nav-link {
+    margin-left: 5px;
+}
+
+.form-card {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.form-card h1 {
+    margin-bottom: 25px;
+    font-size: 28px;
     color: #243b55;
 }
 
-.assignment-section {
-    background-color: white;
-    padding: 25px;
-    margin-bottom: 30px;
-    border-radius: 10px;
+.card {
     border: 1px solid #dee2e6;
 }
 
-.assignment-section h2 {
-    font-size: 22px;
-    margin-bottom: 20px;
-    color: #243b55;
-}
-
-form {
-    max-width: 100%;
+.card-body {
+    padding: 25px;
 }
 
 textarea {
     resize: vertical;
 }
 
-#genderFeedback {
-    display: block;
+@media (max-width: 576px) {
+    .form-card {
+        padding: 20px;
+    }
+
+    .form-card h1 {
+        font-size: 23px;
+    }
 }
