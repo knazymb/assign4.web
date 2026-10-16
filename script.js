@@ -1,74 +1,66 @@
-function setupValidation(form) {
-    form.addEventListener("submit", function (event) {
-        event.preventDefault();
+document.querySelectorAll(".needs-validation").forEach(function (form) {
+    const password = form.querySelector("#password");
+    const confirmPassword = form.querySelector("#confirmPassword");
+    const successMessage = form.querySelector("#successMessage") ||
+        form.querySelector("#registrationSuccess");
+    const genderError = form.querySelector("#genderError");
+    const genderRadios = form.querySelectorAll('input[name="gender"]');
 
-        const inputs = form.querySelectorAll(
-            "input:not([type='radio']):not([type='checkbox']), textarea, select"
-        );
-
-        inputs.forEach(function (input) {
-            input.classList.remove("is-valid", "is-invalid");
-        });
-
-        if (form.id === "registrationForm") {
-            const password = document.getElementById("password");
-            const confirmPassword = document.getElementById("confirmPassword");
-
+    function checkPasswords() {
+        if (password && confirmPassword) {
             confirmPassword.setCustomValidity("");
 
             if (confirmPassword.value !== password.value) {
-                confirmPassword.setCustomValidity("Passwords do not match");
+                confirmPassword.setCustomValidity("Passwords do not match.");
             }
         }
+    }
 
-        inputs.forEach(function (input) {
-            if (input.checkValidity()) {
-                input.classList.add("is-valid");
-                input.classList.remove("is-invalid");
-            } else {
-                input.classList.add("is-invalid");
-                input.classList.remove("is-valid");
-            }
+    function updateField(input) {
+        if (input.type === "radio" || input.type === "checkbox") {
+            return;
+        }
+
+        if (input.checkValidity()) {
+            input.classList.add("is-valid");
+            input.classList.remove("is-invalid");
+        } else {
+            input.classList.add("is-invalid");
+            input.classList.remove("is-valid");
+        }
+    }
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        checkPasswords();
+
+        form.querySelectorAll(
+            "input:not([type='radio']):not([type='checkbox']), textarea, select"
+        ).forEach(function (input) {
+            updateField(input);
         });
 
-        if (form.id === "registrationForm") {
-            const radios = form.querySelectorAll(
-                "input[name='gender']"
-            );
-            const genderFeedback = document.getElementById("genderFeedback");
-            const genderSelected = Array.from(radios).some(
+        if (genderRadios.length > 0) {
+            const genderSelected = Array.from(genderRadios).some(
                 function (radio) {
                     return radio.checked;
                 }
             );
 
-            radios.forEach(function (radio) {
-                radio.classList.remove("is-invalid", "is-valid");
-                if (!genderSelected) {
-                    radio.classList.add("is-invalid");
-                }
+            genderRadios.forEach(function (radio) {
+                radio.classList.toggle("is-invalid", !genderSelected);
+                radio.classList.toggle("is-valid", genderSelected);
             });
 
-            genderFeedback.style.display = genderSelected ? "none" : "block";
-
-            if (!genderSelected) {
-                radios[0].setCustomValidity("Please select your gender");
-            } else {
-                radios[0].setCustomValidity("");
+            if (genderError) {
+                genderError.style.display = genderSelected ? "none" : "block";
             }
-        }
-
-        if (!form.checkValidity()) {
-            event.stopPropagation();
         }
 
         form.classList.add("was-validated");
 
-        const successMessage = document.getElementById(
-            "registrationSuccess"
-        );
-
-        if (successMessage && form.id === "registrationForm") {
+        if (successMessage) {
             successMessage.hidden = !form.checkValidity();
         }
     });
@@ -76,31 +68,42 @@ function setupValidation(form) {
     form.addEventListener("input", function (event) {
         const input = event.target;
 
-        if (form.id === "registrationForm" &&
-            (input.id === "password" ||
-             input.id === "confirmPassword")) {
+        checkPasswords();
 
-            const password = document.getElementById("password");
-            const confirmPassword = document.getElementById("confirmPassword");
+        if (form.classList.contains("was-validated")) {
+            updateField(input);
 
-            confirmPassword.setCustomValidity("");
+            if (confirmPassword) {
+                updateField(confirmPassword);
+            }
 
-            if (confirmPassword.value !== password.value) {
-                confirmPassword.setCustomValidity("Passwords do not match");
+            if (successMessage) {
+                successMessage.hidden = !form.checkValidity();
             }
         }
+    });
 
-        if (input.matches("input, textarea, select") &&
-            input.type !== "radio" &&
-            input.type !== "checkbox" &&
-            form.classList.contains("was-validated")) {
+    form.addEventListener("change", function () {
+        if (form.classList.contains("was-validated")) {
+            if (genderRadios.length > 0) {
+                const genderSelected = Array.from(genderRadios).some(
+                    function (radio) {
+                        return radio.checked;
+                    }
+                );
 
-            if (input.checkValidity()) {
-                input.classList.add("is-valid");
-                input.classList.remove("is-invalid");
-            } else {
-                input.classList.add("is-invalid");
-                input.classList.remove("is-valid");
+                genderRadios.forEach(function (radio) {
+                    radio.classList.toggle("is-invalid", !genderSelected);
+                    radio.classList.toggle("is-valid", genderSelected);
+                });
+
+                if (genderError) {
+                    genderError.style.display = genderSelected ? "none" : "block";
+                }
+            }
+
+            if (successMessage) {
+                successMessage.hidden = !form.checkValidity();
             }
         }
     });
@@ -115,22 +118,17 @@ function setupValidation(form) {
                 }
             );
 
-            const genderFeedback = document.getElementById("genderFeedback");
-            if (genderFeedback) {
-                genderFeedback.style.display = "none";
+            if (confirmPassword) {
+                confirmPassword.setCustomValidity("");
             }
 
-            const successMessage = document.getElementById(
-                "registrationSuccess"
-            );
+            if (genderError) {
+                genderError.style.display = "none";
+            }
 
             if (successMessage) {
                 successMessage.hidden = true;
             }
         }, 0);
     });
-}
-
-document.querySelectorAll(".needs-validation").forEach(function (form) {
-    setupValidation(form);
 });
